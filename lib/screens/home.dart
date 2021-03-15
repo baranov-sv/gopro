@@ -20,8 +20,9 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: FutureBuilder<String>(
+    return Scaffold(
+        appBar: AppBar(title: Text('GoPro App')),
+        body: FutureBuilder<String>(
             future: _connection,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
@@ -29,22 +30,39 @@ class _HomeState extends State<Home> {
               }
 
               if (snapshot.hasData) {
-                return Column(children: [
-                  Container(child: Text("Videos"), color: Colors.blue),
-                  Container(child: Text("Photos"), color: Colors.red)
-                ]);
-              } else {
                 return Column(
-                  children: [
-                    Center(child: Text("Error")),
-                    ElevatedButton(
-                        child: Text("Reconnect"),
-                        onPressed: () {
-                          setState(() {
-                            _connection = _connect(3);
-                          });
-                        })
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child:
+                            Center(child: Icon(Icons.featured_video_rounded)),
+                        decoration: const BoxDecoration(color: Colors.green),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child:
+                            Center(child: Icon(Icons.enhance_photo_translate)),
+                        decoration: const BoxDecoration(color: Colors.red),
+                      ),
+                    )
                   ],
+                );
+              } else {
+                return Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Error"),
+                        ElevatedButton(
+                            child: Text("Reconnect"),
+                            onPressed: () {
+                              setState(() {
+                                _connection = _connect(3);
+                              });
+                            })
+                      ]),
                 );
               }
             }));
@@ -52,6 +70,7 @@ class _HomeState extends State<Home> {
 
   Future<String> _connect(int delay) {
     return Future<String>.delayed(Duration(seconds: delay), () {
+      // if (false) {
       if (Random().nextBool()) {
         return "GoPro connection";
       } else {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gopro/screens/media.dart';
 import 'dart:math';
 
 class Home extends StatefulWidget {
@@ -34,19 +35,39 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Expanded(
-                      child: Container(
-                        child:
-                            Center(child: Icon(Icons.featured_video_rounded)),
-                        decoration: const BoxDecoration(color: Colors.green),
-                      ),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Media()),
+                              );
+                            },
+                            child: Container(
+                                // decoration:
+                                //     const BoxDecoration(color: Colors.green),
+                                child:
+                                    const Icon(Icons.featured_video_rounded)))),
+                    const Divider(
+                      height: 20,
+                      thickness: 5,
+                      indent: 20,
+                      endIndent: 20,
                     ),
                     Expanded(
-                      child: Container(
-                        child:
-                            Center(child: Icon(Icons.enhance_photo_translate)),
-                        decoration: const BoxDecoration(color: Colors.red),
-                      ),
-                    )
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Media()),
+                              );
+                            },
+                            child: Container(
+                                // decoration:
+                                //     const BoxDecoration(color: Colors.green),
+                                child:
+                                    const Icon(Icons.enhance_photo_translate))))
                   ],
                 );
               } else {
@@ -70,7 +91,7 @@ class _HomeState extends State<Home> {
 
   Future<String> _connect(int delay) {
     return Future<String>.delayed(Duration(seconds: delay), () {
-      // if (false) {
+      // if (true) {
       if (Random().nextBool()) {
         return "GoPro connection";
       } else {

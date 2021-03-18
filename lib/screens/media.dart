@@ -13,7 +13,7 @@ class Media extends StatelessWidget {
                   thumbnail: Image.asset('media.jpeg'),
                   title: 'Media',
                   size: 5,
-                  duration: 2);
+                  duration: null);
             }));
   }
 }
@@ -79,9 +79,9 @@ class _MediaDescription extends StatelessWidget {
 
     final List<Widget>? _optinalWidgets =
         (duration != null) ? <Widget>[_duration()] : null;
+
     return Container(
       child: Center(
-        // padding: const EdgeInsets.fromLTRB(5.0, 0.0, 0.0, 0.0),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [..._widgets, ...?_optinalWidgets]),

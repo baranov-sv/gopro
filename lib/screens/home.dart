@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gopro/screens/media.dart';
-import 'dart:math';
+import 'package:gopro/resources/gopro_provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    _connection = _connect(5);
+    _connection = _connect();
     super.initState();
   }
 
@@ -72,31 +73,29 @@ class _HomeState extends State<Home> {
                 );
               } else {
                 return Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Error"),
-                        ElevatedButton(
-                            child: Text("Reconnect"),
-                            onPressed: () {
-                              setState(() {
-                                _connection = _connect(3);
-                              });
-                            })
-                      ]),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(snapshot.error.toString()),
+                          ElevatedButton(
+                              child: Text("Reconnect"),
+                              onPressed: () {
+                                setState(() {
+                                  _connection = _connect();
+                                });
+                              })
+                        ]),
+                  ),
                 );
               }
             }));
   }
 
-  Future<String> _connect(int delay) {
-    return Future<String>.delayed(Duration(seconds: delay), () {
-      // if (true) {
-      if (Random().nextBool()) {
-        return "GoPro connection";
-      } else {
-        throw ("some arbitrary error");
-      }
-    });
+  Future<String> _connect() async {
+    await GoProProvider().fetchMediaList();
+
+    return "GoPro connection";
   }
 }

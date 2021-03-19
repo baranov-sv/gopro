@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gopro/screens/media.dart';
+import 'package:gopro/models/media.dart';
+import 'package:gopro/screens/media_screen.dart';
 import 'package:gopro/resources/gopro_provider.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 /// This is the private State class that goes with Home.
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   Future<String>? _connection;
+  List<Media> _mediaList = [];
 
   @override
   void initState() {
@@ -23,12 +25,23 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('GoPro App')),
+        appBar: AppBar(title: Text('GoPro App'), actions: [
+          IconButton(
+              icon: const Icon(Icons.flip_camera_android),
+              onPressed: () {
+                setState(() {
+                  _connection = _connect();
+                });
+              })
+        ]),
         body: FutureBuilder<String>(
             future: _connection,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
-                return Center(child: Text("Connecting ..."));
+                return Center(
+                  child: Text("Connecting ...",
+                      style: const TextStyle(fontSize: 18.0)),
+                );
               }
 
               if (snapshot.hasData) {
@@ -41,7 +54,10 @@ class _HomeState extends State<Home> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Media()),
+                                    builder: (context) => MediaScreen(
+                                        mediaList: _mediaList
+                                            .where((element) => element.isVideo)
+                                            .toList())),
                               );
                             },
                             child: Container(
@@ -61,7 +77,10 @@ class _HomeState extends State<Home> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Media()),
+                                    builder: (context) => MediaScreen(
+                                        mediaList: _mediaList
+                                            .where((element) => element.isPhoto)
+                                            .toList())),
                               );
                             },
                             child: Container(
@@ -78,9 +97,13 @@ class _HomeState extends State<Home> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(snapshot.error.toString()),
+                          Text(
+                            snapshot.error.toString(),
+                            style: const TextStyle(fontSize: 18.0),
+                          ),
                           ElevatedButton(
-                              child: Text("Reconnect"),
+                              child: Text("Reconnect",
+                                  style: const TextStyle(fontSize: 18.0)),
                               onPressed: () {
                                 setState(() {
                                   _connection = _connect();
@@ -94,7 +117,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> _connect() async {
-    await GoProProvider().fetchMediaList();
+    _mediaList = await GoProProvider().fetchMediaList();
 
     return "GoPro connection";
   }

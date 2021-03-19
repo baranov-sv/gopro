@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:gopro/models/media.dart';
 import 'package:gopro/resources/gopro_api.dart';
 
@@ -14,22 +13,12 @@ class GoProProvider {
   }
 
   Future<List<Media>> fetchMediaList() async {
-    final data = await _api.fetchMediaList();
-    List<Media> result = [];
-    data['media'].forEach((json) {
-      json['fs'].forEach((subJson) {
-        Media media = Media.fromJson({
-          'directoryName': json['d'],
-          'fileName': subJson['n'],
-          'createdAt': subJson['cre'],
-          'modifiedAt': subJson['mod'],
-          'size': subJson['s']
-        });
+    final _mediaList = await _api.fetchMediaList();
 
-        result.add(media);
-      });
-    });
-
-    return result;
+    return _mediaList.map<Media>((json) => Media.fromJson(json)).toList();
   }
+
+  // Future<Video> fetchVideo(Media media) async {}
+
+  // Future<Photo> fetchPhoto(Media media) async {}
 }

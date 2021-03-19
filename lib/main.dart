@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gopro/screens/home.dart';
+import 'package:gopro/screens/home_screen.dart';
 
 void main() {
   runApp(App());
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: HomeScreen(),
     );
   }
 }

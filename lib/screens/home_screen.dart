@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gopro/models/media.dart';
-import 'package:gopro/screens/media_screen.dart';
+import 'package:gopro/screens/media_list_screen.dart';
 import 'package:gopro/resources/gopro_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -119,7 +119,7 @@ class _MediaTap extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => MediaScreen(mediaList: mediaList)),
+                builder: (context) => MediaListScreen(mediaList: mediaList)),
           );
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [

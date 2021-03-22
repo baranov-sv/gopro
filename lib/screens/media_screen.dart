@@ -2,96 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:gopro/models/media.dart';
 
 class MediaScreen extends StatelessWidget {
-  final List<Media> mediaList;
-  MediaScreen({Key? key, required this.mediaList}) : super(key: key);
+  final Media media;
+
+  MediaScreen({Key? key, required this.media}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Media')),
-        body: ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: mediaList.length,
-            itemBuilder: (context, index) {
-              final _media = mediaList[index];
-              return MediaItem(
-                  thumbnail: Image.network(_media.thumbnailUrl),
-                  filename: _media.fileName,
-                  size: _media.humanSize);
-            }));
+        appBar: AppBar(title: Text(media.fileName)),
+        body: _Media(media: media));
   }
 }
 
-class MediaItem extends StatelessWidget {
-  const MediaItem({
-    Key? key,
-    required this.thumbnail,
-    required this.filename,
-    required this.size,
-  }) : super(key: key);
+class _Media extends StatelessWidget {
+  final Media media;
 
-  final Widget thumbnail;
-  final String filename;
-  final String size;
+  _Media({Key? key, required this.media}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: thumbnail,
-          ),
-          Expanded(
-            flex: 3,
-            child: _MediaDescription(filename: filename, size: size),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class _MediaDescription extends StatelessWidget {
-  const _MediaDescription({
-    Key? key,
-    required this.filename,
-    required this.size,
-  }) : super(key: key);
-
-  final String filename;
-  final String size;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-          _title(),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
-          _size()
-        ])));
-  }
-
-  Widget _title() {
-    return Text(
-      filename,
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 16.0,
-      ),
-    );
-  }
-
-  Widget _size() {
-    return Text(
-      size,
-      style: const TextStyle(fontSize: 12.0),
-    );
+    if (media.isPhoto) {
+      return Center(
+        child: InteractiveViewer(
+            child: SizedBox.expand(
+                child: FadeInImage.assetNetwork(
+              placeholder: 'assets/circular_progress_indicator.gif',
+              image: media.url,
+            )),
+            minScale: 0.1,
+            maxScale: 5.0),
+      );
+    } else {
+      return Center(child: Text("Not supported yet"));
+    }
   }
 }

@@ -10,17 +10,10 @@ class MediaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(media.fileName)),
-        body: _Media(media: media));
+        body: SafeArea(child: _mediaWidget(media)));
   }
-}
 
-class _Media extends StatelessWidget {
-  final Media media;
-
-  _Media({Key? key, required this.media}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _mediaWidget(Media media) {
     if (media.isPhoto) {
       return Center(
         child: InteractiveViewer(

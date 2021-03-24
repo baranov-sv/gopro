@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gopro/models/media.dart';
 import 'package:video_player/video_player.dart';
+import 'package:photo_view/photo_view.dart';
 
 class MediaScreen extends StatelessWidget {
   final Media media;
@@ -16,14 +17,13 @@ class MediaScreen extends StatelessWidget {
           appBar: AppBar(title: Text(media.fileName)),
           body: SafeArea(
               child: Center(
-            child: InteractiveViewer(
-                child: SizedBox.expand(
-                    child: FadeInImage.assetNetwork(
-                  placeholder: 'assets/circular_progress_indicator.gif',
-                  image: media.url,
-                )),
-                minScale: 0.1,
-                maxScale: 5.0),
+            child: PhotoView(
+                imageProvider: NetworkImage(media.url),
+                backgroundDecoration: BoxDecoration(color: Colors.white),
+                loadingBuilder: (context, _) {
+                  return CircularProgressIndicator();
+                },
+                minScale: 0.1),
           )));
     } else {
       return _VideoPlayer(media: media);
@@ -87,18 +87,15 @@ class _VideoPlayerState extends State<_VideoPlayer> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Center(
-                child: Container(
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: <Widget>[
-                        VideoPlayer(_controller),
-                        _ControlsOverlay(controller: _controller),
-                        VideoProgressIndicator(_controller,
-                            allowScrubbing: true),
-                      ],
-                    ),
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      VideoPlayer(_controller),
+                      _ControlsOverlay(controller: _controller),
+                      VideoProgressIndicator(_controller, allowScrubbing: true),
+                    ],
                   ),
                 ),
               );

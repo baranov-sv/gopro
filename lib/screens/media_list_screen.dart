@@ -16,7 +16,7 @@ class MediaListScreen extends StatelessWidget {
               itemCount: mediaList.length,
               itemBuilder: (context, index) {
                 final _media = mediaList[index];
-                return InkWell(
+                return GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,

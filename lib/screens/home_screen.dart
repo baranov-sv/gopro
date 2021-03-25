@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: <Widget>[
                       Expanded(
                           child: _mediaTapWidget(
-                              Icons.featured_video_rounded, _videos)),
+                              "assets/video-gallery.png", _videos)),
                       const Divider(
                         height: 20,
                         thickness: 5,
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Expanded(
                           child: _mediaTapWidget(
-                              Icons.enhance_photo_translate, _photos)),
+                              "assets/photo-gallery.png", _photos)),
                     ],
                   );
                 } else {
@@ -101,8 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return GoProProvider().fetchMediaList();
   }
 
-  Widget _mediaTapWidget(IconData iconData, List<Media> mediaList) {
-    return InkWell(
+  Widget _mediaTapWidget(String asset, List<Media> mediaList) {
+    return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
@@ -111,10 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(iconData),
+          Image.asset(asset, width: 200, height: 200),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(mediaList.length.toString()),
+            padding: const EdgeInsets.all(10.0),
+            child: Text(mediaList.length.toString(),
+                style: const TextStyle(fontSize: 18.0)),
           )
         ]));
   }

@@ -12,22 +12,32 @@ class MediaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (media.isPhoto) {
-      return Scaffold(
-          appBar: AppBar(title: Text(media.fileName)),
-          body: SafeArea(
-              child: Center(
-            child: PhotoView(
-                imageProvider: NetworkImage(media.url),
-                backgroundDecoration: BoxDecoration(color: Colors.white),
-                loadingBuilder: (context, _) {
-                  return CircularProgressIndicator();
-                },
-                minScale: 0.1),
-          )));
-    } else {
-      return _VideoPlayer(media: media);
-    }
+    return Scaffold(
+        appBar: AppBar(title: Text(media.fileName)),
+        body: SafeArea(
+            child: Center(
+                child: media.isPhoto
+                    ? _PhotoViewer(media: media)
+                    : _VideoPlayer(media: media))));
+  }
+}
+
+class _PhotoViewer extends StatelessWidget {
+  final Media media;
+  _PhotoViewer({Key? key, required this.media}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: PhotoView(
+        imageProvider: NetworkImage(media.url),
+        backgroundDecoration: BoxDecoration(color: Colors.white),
+        loadingBuilder: (context, _) {
+          return CircularProgressIndicator();
+        },
+        initialScale: PhotoViewComputedScale.contained,
+      ),
+    );
   }
 }
 
@@ -59,9 +69,6 @@ class _VideoPlayerState extends State<_VideoPlayer> {
     // Initialize the controller and store the Future for later use.
     _initializeVideoPlayerFuture = _controller.initialize();
 
-    // Use the controller to loop the video.
-    _controller.setLooping(true);
-
     super.initState();
   }
 
@@ -75,39 +82,30 @@ class _VideoPlayerState extends State<_VideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(media.fileName),
-      ),
-      // Use a FutureBuilder to display a loading spinner while waiting for the
-      // VideoPlayerController to finish initializing.
-      body: SafeArea(
-        child: FutureBuilder(
-          future: _initializeVideoPlayerFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      VideoPlayer(_controller),
-                      _ControlsOverlay(controller: _controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: true),
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              // If the VideoPlayerController is still initializing, show a
-              // loading spinner.
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+    return FutureBuilder(
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          // If the VideoPlayerController is still initializing, show a
+          // loading spinner.
+          return CircularProgressIndicator();
+        }
+
+        return Container(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                VideoPlayer(_controller),
+                _ControlsOverlay(controller: _controller),
+                VideoProgressIndicator(_controller, allowScrubbing: true),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -3,13 +3,15 @@ import 'package:gopro/models/media.dart';
 import 'package:gopro/screens/media_screen.dart';
 
 class MediaListScreen extends StatelessWidget {
+  final String title;
   final List<Media> mediaList;
-  MediaListScreen({Key? key, required this.mediaList}) : super(key: key);
+  MediaListScreen({Key? key, required this.title, required this.mediaList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Media')),
+        appBar: AppBar(title: Text(title)),
         body: SafeArea(
           child: ListView.builder(
               padding: const EdgeInsets.all(8),

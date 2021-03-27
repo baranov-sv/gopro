@@ -1,19 +1,51 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:gopro/models/media.dart';
 import 'package:video_player/video_player.dart';
 import 'package:photo_view/photo_view.dart';
 
-class MediaScreen extends StatelessWidget {
+class MediaScreen extends StatefulWidget {
   final Media media;
 
   MediaScreen({Key? key, required this.media}) : super(key: key);
 
   @override
+  _MediaScreenState createState() => _MediaScreenState(media: media);
+}
+
+class _MediaScreenState extends State<MediaScreen> {
+  final Media media;
+
+  _MediaScreenState({required this.media}) : super();
+
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft
+    ]);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var deviceOrientation = MediaQuery.of(context).orientation;
+
     return Scaffold(
-        appBar: AppBar(title: Text(media.fileName)),
+        appBar: deviceOrientation == Orientation.portrait
+            ? AppBar(title: Text(media.fileName))
+            : null,
         body: SafeArea(
             child: Center(
                 child: media.isPhoto

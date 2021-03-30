@@ -11,6 +11,7 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  final _observer = _NavigatorObserverWithOrientation();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,20 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomeScreen(),
+      navigatorObservers: [_observer],
     );
+  }
+}
+
+class _NavigatorObserverWithOrientation extends NavigatorObserver {
+  // Set portrait orientation when push/pop routes
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 }

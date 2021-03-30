@@ -7,36 +7,10 @@ import 'package:gopro/models/media.dart';
 import 'package:video_player/video_player.dart';
 import 'package:photo_view/photo_view.dart';
 
-class MediaScreen extends StatefulWidget {
+class MediaScreen extends StatelessWidget {
   final Media media;
 
   MediaScreen({Key? key, required this.media}) : super(key: key);
-
-  @override
-  _MediaScreenState createState() => _MediaScreenState(media: media);
-}
-
-class _MediaScreenState extends State<MediaScreen> {
-  final Media media;
-
-  _MediaScreenState({required this.media}) : super();
-
-  @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft
-    ]);
-  }
-
-  @override
-  void dispose() {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +18,14 @@ class _MediaScreenState extends State<MediaScreen> {
 
     return Scaffold(
         appBar: deviceOrientation == Orientation.portrait
-            ? AppBar(title: Text(media.fileName))
+            ? AppBar(title: Text(media.fileName), actions: [
+                IconButton(
+                    icon: const Icon(Icons.rotate_90_degrees_ccw_sharp),
+                    onPressed: () {
+                      SystemChrome.setPreferredOrientations(
+                          [DeviceOrientation.landscapeLeft]);
+                    })
+              ])
             : null,
         body: SafeArea(
             child: Center(

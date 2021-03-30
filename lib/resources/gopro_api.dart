@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:gopro/resources/gopro_exceptions.dart';
 
 class GoProApi {
   static final GoProApi _instance = GoProApi._privateConstructor();
@@ -69,15 +70,15 @@ class GoProApi {
   }
 
   Future<Map<String, dynamic>> _getRequest(Uri uri) async {
-    final response =
-        await http.get(uri).timeout(const Duration(seconds: 3), onTimeout: () {
-      throw Exception('The connection has timed out, Please try again!');
+    const Duration duration = Duration(seconds: 3);
+    final response = await http.get(uri).timeout(duration, onTimeout: () {
+      throw GoProTimeoutConnection(duration);
     });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to fetch media');
+      throw GoProFailedResponse();
     }
   }
 }

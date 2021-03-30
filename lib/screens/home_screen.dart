@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gopro/models/media.dart';
 import 'package:gopro/screens/media_list_screen.dart';
+import 'package:gopro/resources/gopro_exceptions.dart';
 import 'package:gopro/resources/gopro_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -71,16 +73,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   );
                 } else {
+                  String _message = "";
+                  if (snapshot.error is SocketException) {
+                    _message =
+                        "Network is unreachable. Check Wifi connection to GoPro.";
+                  } else if (snapshot.error is GoProTimeoutConnection) {
+                    _message =
+                        "Connection has timed out. Check Wifi connection to GoPro.";
+                  } else if (snapshot.error is GoProFailedResponse) {
+                    _message =
+                        "Fetch has failed. Check WiFi connection to GoPro.";
+                  } else {
+                    _message = snapshot.error.toString();
+                  }
+
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              snapshot.error.toString(),
-                              style: const TextStyle(fontSize: 18.0),
-                            ),
+                            Text(_message,
+                                style: const TextStyle(fontSize: 18.0),
+                                textAlign: TextAlign.center),
                             ElevatedButton(
                                 child: Text("Reconnect",
                                     style: const TextStyle(fontSize: 18.0)),

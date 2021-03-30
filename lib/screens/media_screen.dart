@@ -76,8 +76,14 @@ class _VideoPlayerState extends State<_VideoPlayer> {
     // or the internet.
     _controller = VideoPlayerController.network(media.url);
 
+    _controller.setLooping(false);
     _controller.addListener(() {
-      setState(() {});
+      setState(() {
+        // Seek to 0 position when video is ended
+        if (_controller.value.duration == _controller.value.position) {
+          _controller.seekTo(Duration()).then((value) => _controller.pause());
+        }
+      });
     });
     // Initialize the controller and store the Future for later use.
     _initializeVideoPlayerFuture = _controller.initialize();

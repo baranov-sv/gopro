@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:gopro/models/media.dart';
 import 'package:video_player/video_player.dart';
 import 'package:photo_view/photo_view.dart';
+
+import 'package:gopro/models/media.dart';
+import 'package:gopro/widgets/broken_media_widget.dart';
 
 class MediaScreen extends StatelessWidget {
   final Media media;
@@ -79,6 +81,10 @@ class _VideoPlayerState extends State<_VideoPlayer> {
     _controller.setLooping(false);
     _controller.addListener(() {
       setState(() {
+        if (_controller.value.hasError) {
+          return;
+        }
+
         // Seek to 0 position when video is ended
         if (_controller.value.duration == _controller.value.position) {
           _controller.seekTo(Duration()).then((value) => _controller.pause());
@@ -110,8 +116,12 @@ class _VideoPlayerState extends State<_VideoPlayer> {
           return CircularProgressIndicator();
         }
 
+        if (_controller.value.hasError) {
+          // If VideoPlayerController has error, show stub
+          return BrokenMediaWidget();
+        }
+
         return Container(
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
             child: Stack(

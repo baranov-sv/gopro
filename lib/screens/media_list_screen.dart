@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gopro/models/media.dart';
 import 'package:gopro/screens/media_screen.dart';
+import 'package:gopro/widgets/broken_media_widget.dart';
 
 class MediaListScreen extends StatelessWidget {
   final String title;
@@ -27,7 +28,10 @@ class MediaListScreen extends StatelessWidget {
                       );
                     },
                     child: _MediaItem(
-                        thumbnail: Image.network(_media.thumbnailUrl),
+                        thumbnail: Image.network(_media.thumbnailUrl,
+                            errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) =>
+                                BrokenMediaWidget()),
                         filename: _media.fileName,
                         size: _media.humanSize));
               }),

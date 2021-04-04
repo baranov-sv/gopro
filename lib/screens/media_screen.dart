@@ -61,13 +61,10 @@ class _VideoPlayer extends StatefulWidget {
   _VideoPlayer({Key? key, required this.media}) : super(key: key);
 
   @override
-  _VideoPlayerState createState() => _VideoPlayerState(media: media);
+  _VideoPlayerState createState() => _VideoPlayerState();
 }
 
 class _VideoPlayerState extends State<_VideoPlayer> {
-  final Media media;
-  _VideoPlayerState({required this.media}) : super();
-
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
@@ -76,7 +73,7 @@ class _VideoPlayerState extends State<_VideoPlayer> {
     // Create and store the VideoPlayerController. The VideoPlayerController
     // offers several different constructors to play videos from assets, files,
     // or the internet.
-    _controller = VideoPlayerController.network(media.url);
+    _controller = VideoPlayerController.network(widget.media.url);
 
     _controller.setLooping(false);
     _controller.addListener(() {
